@@ -27,11 +27,27 @@ export async function getFilePath(text, document) {
     return getData(document, viewPath, info)
 }
 
+function gtvFileName(list) {
+    if (list.startsWith('<x-')) {
+        return list.substring(3).replace(/\./g, '/') + '.blade.php';
+    } else {
+        return list.replace(/\./g, '/') + '.blade.php';
+    }
+}
+
+function gtvFilePath(path, list) {
+    if (list.startsWith('<x-')) {
+        return path + '/components/' + gtvFileName(list);
+    } else {
+        return path + '/' + gtvFileName(list);
+    }
+}
+
 async function getData(document, path, list) {
     let workspaceFolder = workspace.getWorkspaceFolder(document.uri).uri.fsPath
     let editor = `${env.uriScheme}://file`
-    let fileName = list.replace(/\./g, '/') + '.blade.php'
-    let filePath = `${workspaceFolder}${path}/${fileName}`
+    let fileName = gtvFileName(list);
+    let filePath = workspaceFolder + gtvFilePath(path, list);
     let exists = await fs.pathExists(filePath)
 
     return exists
