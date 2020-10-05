@@ -30,6 +30,8 @@ export async function getFilePath(text, document) {
 function gtvFileName(list) {
     if (list.startsWith('<x-')) {
         return list.substring(3).replace(/\./g, '/') + '.blade.php';
+    } else if (list.startsWith('<livewire:')) {
+        return list.substring(10).replace(/\./g, '/') + '.php';
     } else {
         return list.replace(/\./g, '/') + '.blade.php';
     }
@@ -38,6 +40,8 @@ function gtvFileName(list) {
 function gtvFilePath(path, list) {
     if (list.startsWith('<x-')) {
         return path + '/components/' + gtvFileName(list);
+    } else if (list.startsWith('<livewire:')) {
+        return '/app/Http/Livewire/' + gtvFileName(list);
     } else {
         return path + '/' + gtvFileName(list);
     }
